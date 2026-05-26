@@ -1,0 +1,16 @@
+"""URLs raiz do Flow Orizon."""
+
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
+
+
+def health_check(_request):
+    """Endpoint de healthcheck para verificar se a API está no ar."""
+    return JsonResponse({"status": "ok", "service": "flow-orizon-api"})
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/health/", health_check, name="health-check"),
+]
