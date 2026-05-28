@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Bibliotecas de terceiros
     "rest_framework",
+    # Apps do projeto
+    "apps.users",
 ]
 
 
