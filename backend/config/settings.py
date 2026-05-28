@@ -1,12 +1,11 @@
 """
 Configuração do Django para o projeto Flow Orizon.
 
-Esta é a versão inicial de setup. Funcionalidades como autenticação JWT,
-documentação OpenAPI, CORS e apps internos serão adicionadas em iterações
-seguintes.
+Documentação OpenAPI e CORS serão adicionados em iterações seguintes.
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -40,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Bibliotecas de terceiros
     "rest_framework",
 ]
 
@@ -126,3 +126,29 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# ============================================================
+# Django REST Framework
+# ============================================================
+# Por padrão, toda a API exige autenticação via JWT. Endpoints que
+# precisam ser públicos (registro, login) liberam o acesso explicitamente.
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+}
+
+
+# ============================================================
+# Simple JWT
+# ============================================================
+# access token de curta duração (usado em cada request) e refresh token
+# de vida longa (usado só para gerar um novo access quando ele expira).
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+}
