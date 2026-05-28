@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # Apps do projeto
     "apps.users",
     "apps.categories",
+    "apps.tasks",
 ]
 
 
