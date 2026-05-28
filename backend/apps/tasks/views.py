@@ -4,6 +4,8 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.integrations.discord import notify_task_shared
+
 from .models import Task, TaskShare
 from .permissions import TaskAccessPermission
 from .serializers import TaskSerializer, TaskShareSerializer
@@ -78,6 +80,13 @@ class TaskViewSet(viewsets.ModelViewSet):
                 "permission": serializer.validated_data["permission"],
             },
         )
+        notify_task_shared(
+            task_title=task.title,
+            shared_by=request.user.username,
+            shared_with=target.username,
+            permission=share.permission,
+        )
+
         out = TaskShareSerializer(share)
         code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
         return Response(out.data, status=code)
