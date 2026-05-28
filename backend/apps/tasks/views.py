@@ -13,6 +13,13 @@ class TaskViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = TaskSerializer
+    # Filtros de igualdade exata (?is_completed=true&priority=high&category=2),
+    # ordenação (?ordering=due_date ou ?ordering=-created_at) e busca textual
+    # parcial em título/descrição (?search=relatorio).
+    filterset_fields = ("is_completed", "priority", "category")
+    ordering_fields = ("created_at", "due_date", "priority")
+    ordering = ("-created_at",)
+    search_fields = ("title", "description")
 
     def get_queryset(self):
         return Task.objects.filter(owner=self.request.user)
