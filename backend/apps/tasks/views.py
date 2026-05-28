@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -25,6 +26,9 @@ class TaskViewSet(viewsets.ModelViewSet):
     search_fields = ("title", "description")
 
     def get_queryset(self):
+        # Durante a geração do schema (drf-spectacular) não há usuário real.
+        if getattr(self, "swagger_fake_view", False):
+            return Task.objects.none()
         # O usuário enxerga as tarefas que criou e também as que foram
         # compartilhadas com ele. distinct() evita duplicatas no join.
         user = self.request.user
@@ -91,6 +95,17 @@ class TaskViewSet(viewsets.ModelViewSet):
         code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
         return Response(out.data, status=code)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="share_id",
+                type=int,
+                location=OpenApiParameter.PATH,
+                description="ID do compartilhamento a ser revogado.",
+            )
+        ],
+        responses={204: None},
+    )
     @action(
         detail=True,
         methods=["delete"],

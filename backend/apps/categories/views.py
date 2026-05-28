@@ -10,6 +10,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
 
     def get_queryset(self):
+        # Durante a geração do schema (drf-spectacular) não há usuário real.
+        if getattr(self, "swagger_fake_view", False):
+            return Category.objects.none()
         return Category.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):

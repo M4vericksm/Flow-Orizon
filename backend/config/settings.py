@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Bibliotecas de terceiros
     "rest_framework",
     "django_filters",
+    "drf_spectacular",
     # Apps do projeto
     "apps.users",
     "apps.categories",
@@ -152,6 +153,21 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
+# ============================================================
+# Documentação da API (drf-spectacular / OpenAPI)
+# ============================================================
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Flow Orizon API",
+    "DESCRIPTION": "API de gerenciamento de tarefas com categorias, "
+    "compartilhamento entre usuários e integrações externas.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # Schema e Swagger acessíveis sem token, para facilitar a avaliação.
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
 }
 
 
