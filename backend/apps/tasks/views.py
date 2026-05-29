@@ -30,10 +30,12 @@ class TaskViewSet(viewsets.ModelViewSet):
         if getattr(self, "swagger_fake_view", False):
             return Task.objects.none()
         # O usuário enxerga as tarefas que criou e também as que foram
-        # compartilhadas com ele. distinct() evita duplicatas no join.
+        # compartilhadas com ele. distinct() evita duplicatas no join e
+        # select_related("owner") evita o N+1 ao serializar owner.username.
         user = self.request.user
         return (
             Task.objects.filter(Q(owner=user) | Q(shares__shared_with=user))
+            .select_related("owner")
             .distinct()
         )
 
