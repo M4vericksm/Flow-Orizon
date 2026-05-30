@@ -21,6 +21,12 @@ class Task(models.Model):
         choices=Priority.choices,
         default=Priority.MEDIUM,
     )
+    # Cor (hex) do post-it; vazia significa herdar a cor padrão da categoria.
+    color = models.CharField(max_length=7, blank=True, default="")
+    # "Observação": destaca visualmente o post-it (tachinha) no quadro.
+    is_highlighted = models.BooleanField(default=False)
+    # Ordem vertical do post-it dentro da coluna, definida ao arrastar.
+    display_order = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
