@@ -6,7 +6,8 @@ class Category(models.Model):
     """Categoria usada para organizar tarefas. Pertence a um único usuário."""
 
     name = models.CharField(max_length=50)
-    color = models.CharField(max_length=7, blank=True, default="")
+    # Cor padrão (hex) aplicada aos post-its criados nesta categoria/coluna.
+    default_color = models.CharField(max_length=7, blank=True, default="")
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
