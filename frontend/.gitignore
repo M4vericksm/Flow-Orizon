@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+
+# Logs locais do dev server
+vite-dev.log
+vite-dev.err.log
+npm-debug.log*
