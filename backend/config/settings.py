@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Bibliotecas de terceiros
+    "corsheaders",
     "rest_framework",
     "django_filters",
     "drf_spectacular",
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.categories",
     "apps.tasks",
+    "apps.integrations",
 ]
 
 
@@ -55,6 +57,8 @@ INSTALLED_APPS = [
 # ============================================================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # CORS precisa vir o mais cedo possível, antes do CommonMiddleware.
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -180,3 +184,18 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
+
+
+# ============================================================
+# CORS
+# ============================================================
+# O frontend React (Vite) roda em outra origem, então o navegador exige
+# que o backend permita explicitamente essas origens.
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173",
+    ).split(",")
+    if origin.strip()
+]
