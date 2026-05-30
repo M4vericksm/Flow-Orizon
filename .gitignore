@@ -16,6 +16,14 @@ db.sqlite3
 media/
 staticfiles/
 
+# Testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ferramentas locais
+.claude/
+
 # Environment / secrets
 .env
 .env.local
