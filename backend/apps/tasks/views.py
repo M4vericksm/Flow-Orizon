@@ -21,7 +21,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     # ordenação (?ordering=due_date ou ?ordering=-created_at) e busca textual
     # parcial em título/descrição (?search=relatorio).
     filterset_fields = ("is_completed", "priority", "category")
-    ordering_fields = ("created_at", "due_date", "priority")
+    ordering_fields = ("created_at", "due_date", "priority", "display_order")
     ordering = ("-created_at",)
     search_fields = ("title", "description")
 
@@ -36,6 +36,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         return (
             Task.objects.filter(Q(owner=user) | Q(shares__shared_with=user))
             .select_related("owner")
+            .prefetch_related("shares__shared_with", "shares__shared_by")
             .distinct()
         )
 
