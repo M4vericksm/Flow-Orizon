@@ -57,3 +57,51 @@ jobs:
 
       - name: Run tests
         run: pytest --cov=apps --cov-report=term-missing
+
+  e2e-tests:
+    name: End-to-end tests (Selenium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create backend env file
+        run: cp backend/.env.example backend/.env
+
+      - name: Start the stack
+        run: docker compose up -d --build
+
+      - name: Wait for the backend
+        run: |
+          for i in $(seq 1 40); do
+            if curl -sf http://localhost:8000/api/health/ >/dev/null; then
+              echo "backend up"; exit 0
+            fi
+            sleep 3
+          done
+          echo "backend did not start in time"; exit 1
+
+      - name: Wait for the frontend
+        run: |
+          for i in $(seq 1 40); do
+            if curl -sf http://localhost:5173/ >/dev/null; then
+              echo "frontend up"; exit 0
+            fi
+            sleep 3
+          done
+          echo "frontend did not start in time"; exit 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install e2e dependencies
+        run: pip install -r e2e/requirements.txt
+
+      - name: Run selenium tests
+        working-directory: e2e
+        run: pytest -v
+
+      - name: Dump compose logs on failure
+        if: failure()
+        run: docker compose logs
